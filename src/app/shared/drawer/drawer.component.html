@@ -1,9 +1,12 @@
 <div
-  class="fixed z-20 top-0 left-0 h-full w-full bg-black opacity-70"
+  @fadeIn
+  class="fixed z-20 top-0 left-0 h-full w-full bg-black"
+  style="opacity: 0.7"
   (click)="close()"
 ></div>
 <div
-  class="flex flex-col justify-between fixed z-30 top-0 h-full right-0 w-96 bg-white px-10 py-7"
+  @slideIn
+  class="flex flex-col justify-between fixed z-30 top-0 h-full right-0 w-96 max-w-full bg-white px-10 py-7"
 >
   <h2 class="text-2xl font-bold mb-10 flex items-center gap-5">
     <svg
@@ -90,12 +93,11 @@
         <h3 class="text-xl font-bold mb-2">
           {{ isOrderComplete ? 'Order placed!' : 'Cart is empty' }}
         </h3>
-        <p class="text-slate-400 text-sm">
-          {{
-            isOrderComplete
-              ? 'Your order will be delivered soon'
-              : 'Add at least one pair of sneakers to place an order.'
-          }}
+        <p *ngIf="isOrderComplete" class="text-slate-400 text-sm">
+          Your order #{{ orderNumber }} will be delivered soon
+        </p>
+        <p *ngIf="!isOrderComplete" class="text-slate-400 text-sm">
+          Add at least one pair of sneakers to place an order.
         </p>
         <button
           (click)="close()"

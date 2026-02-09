@@ -1,8 +1,52 @@
 <div
+  *ngIf="isOffline"
+  class="fixed top-0 left-0 w-full z-50 bg-amber-500 text-white text-center py-2 text-sm font-medium"
+>
+  You're offline — showing cached data
+</div>
+
+<div
+  *ngIf="showUpdateBanner"
+  class="fixed top-0 left-0 w-full z-50 bg-blue-500 text-white text-center py-2 text-sm font-medium flex items-center justify-center gap-3"
+>
+  <span>A new version is available</span>
+  <button
+    (click)="reloadApp()"
+    class="bg-white text-blue-500 px-3 py-0.5 rounded text-xs font-bold"
+  >
+    Update
+  </button>
+</div>
+
+<div
   class="relative bg-white lg:w-3/4 m-auto lg:rounded-xl shadow-xl shadow-grey-200 lg:my-20"
+  [class.mt-10]="isOffline || showUpdateBanner"
 >
   <app-header></app-header>
   <router-outlet></router-outlet>
 </div>
 
 <app-drawer *ngIf="isCartOpen$ | async"></app-drawer>
+
+<div
+  *ngIf="showInstallPrompt"
+  class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-white rounded-xl shadow-2xl border border-slate-200 p-5 flex items-center gap-4 max-w-md w-[calc(100%-3rem)]"
+>
+  <img src="assets/logos/logo.png" class="w-10 h-10" alt="Logo" />
+  <div class="flex-1 min-w-0">
+    <p class="font-bold text-sm">Install Angular Sneakers</p>
+    <p class="text-slate-400 text-xs">Add to home screen for the best experience</p>
+  </div>
+  <button
+    (click)="installApp()"
+    class="bg-lime-500 text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-lime-600 transition"
+  >
+    Install
+  </button>
+  <button
+    (click)="dismissInstall()"
+    class="text-slate-300 hover:text-slate-500 transition"
+  >
+    <img src="assets/icons/close.svg" class="w-5 h-5" alt="Close" />
+  </button>
+</div>

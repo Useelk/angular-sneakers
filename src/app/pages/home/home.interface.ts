@@ -4,5 +4,6 @@ export interface CartItem {
   price: number;
   imageUrl: string;
   isFavorite: boolean;
+  isAdded: boolean;
   favoriteId?: number;
 }

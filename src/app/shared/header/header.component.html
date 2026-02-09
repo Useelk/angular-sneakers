@@ -1,43 +1,35 @@
-<mat-sidenav-container class="container">
-  <!-- Drawer -->
-  <mat-drawer class="custom-drawer" mode="over" opened>
-    <h3>Side Drawer Content</h3>
-    <button mat-button (click)="closeDrawer()">Close Drawer</button>
-  </mat-drawer>
-
-  <!-- Main Content -->
-  <div class="main-content">
-    <h1>Main Layout</h1>
-    <button mat-button (click)="openDrawer()">Open Drawer</button>
-  </div>
-</mat-sidenav-container>
-
 <header
-  class="sticky top-0 z-10 bg-white bg-opacity-80 flex justify-between border-b border-slate-200 lg:rounded-xl px-10 py-8"
+  class="sticky top-0 z-10 bg-white/80 backdrop-blur-xl flex justify-between border-b border-slate-200 lg:rounded-t-xl px-6 sm:px-10 py-6 sm:py-8"
 >
   <div class="flex items-center gap-4">
-    <img src="/assets/logos/logo.png" alt="Logo" class="w-11" />
+    <img
+      routerLink="/home"
+      src="assets/logos/logo.png"
+      alt="Logo"
+      class="w-11 cursor-pointer"
+    />
 
-    <div>
+    <div class="hidden sm:block">
       <h2 class="font-bold text-xl uppercase">Angular Sneakers</h2>
-      <p class="text-slate-400">Best Sneakers Shop</p>
+      <p class="text-slate-400 text-sm">Best Sneakers Shop</p>
     </div>
   </div>
 
-  <ul *ngIf="item$ | async as item" class="flex items-center gap-10">
-    <li class="flex items-center gap-3 cursor-pointer">
-      <img src="/assets/icons/cart.svg" alt="Cart" />
-      <b>{{ item.cartTotal }} $</b>
+  <ul class="flex items-center gap-5 sm:gap-10">
+    <li
+      (click)="openCart()"
+      class="flex items-center gap-3 cursor-pointer hover:opacity-70 transition"
+    >
+      <img src="assets/icons/cart.svg" alt="Cart" />
+      <b class="hidden sm:inline">{{ cartTotal$ | async | number: '1.2-2' }} $</b>
     </li>
 
-    <li class="flex items-center gap-3 cursor-pointer">
-      <img src="/assets/icons/heart.svg" alt="Favorite" />
-      <span>Favorites</span>
-    </li>
-
-    <li class="flex items-center gap-3 cursor-pointer">
-      <img src="/assets/icons/profile.svg" alt="Favorite" />
-      <span>Profile</span>
+    <li
+      routerLink="/favorites"
+      class="flex items-center gap-3 cursor-pointer hover:opacity-70 transition"
+    >
+      <img src="assets/icons/heart.svg" alt="Favorites" />
+      <span class="hidden sm:inline">Favorites</span>
     </li>
   </ul>
 </header>

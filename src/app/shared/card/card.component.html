@@ -14,12 +14,17 @@
 
   <p>{{ item.title }}</p>
 
-  <div class="flex justify-between mt-5">
+  <div class="flex justify-between items-end mt-5">
     <div class="flex flex-col gap-2">
-      <span class="text-slate-200">Price:</span>
+      <span class="text-slate-400 text-xs">Price:</span>
       <span class="font-bold">{{ item.price | number: '1.2-2' }} $</span>
     </div>
 
-    <img src="assets/icons/plus.svg" alt="Plus" />
+    <img
+      (click)="onAddToCart()"
+      [src]="isInCart ? 'assets/icons/checked.svg' : 'assets/icons/plus.svg'"
+      class="cursor-pointer w-8 h-8"
+      alt="Add to cart"
+    />
   </div>
 </div>

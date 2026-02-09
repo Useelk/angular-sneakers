@@ -1,0 +1,48 @@
+<div class="p-10">
+  <div class="flex items-center gap-4 mb-10">
+    <img
+      routerLink="/home"
+      src="assets/icons/arrow-right.svg"
+      class="rotate-180 cursor-pointer opacity-40 hover:opacity-100 transition"
+      alt="Back"
+    />
+    <h1 class="text-3xl font-bold">My Favorites</h1>
+  </div>
+
+  <ng-container *ngIf="!isLoading; else loadingTpl">
+    <ng-container *ngIf="favorites$ | async as items">
+      <div
+        *ngIf="items.length; else emptyState"
+        class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10"
+      >
+        <app-card
+          *ngFor="let item of items; trackBy: trackByFn"
+          [item]="item"
+        ></app-card>
+      </div>
+
+      <ng-template #emptyState>
+        <div
+          class="flex flex-col items-center justify-center py-20 text-center"
+        >
+          <img src="assets/icons/emoji-2.png" class="w-16 mb-5" />
+          <h3 class="text-xl font-bold mb-2">No favorites yet</h3>
+          <p class="text-slate-400">You haven't added anything to favorites</p>
+        </div>
+      </ng-template>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #loadingTpl>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div
+        *ngFor="let skeleton of [1, 2, 3, 4]"
+        class="border border-slate-100 rounded-xl p-8 animate-pulse"
+      >
+        <div class="bg-slate-100 rounded-lg h-40 mb-4"></div>
+        <div class="bg-slate-100 rounded h-4 w-3/4 mb-3"></div>
+        <div class="bg-slate-100 rounded h-4 w-1/2"></div>
+      </div>
+    </div>
+  </ng-template>
+</div>

@@ -1,18 +1,25 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
+import { DecimalPipe } from '@angular/common';
+import { CartItem } from '../../pages/home/home.interface';
 
 @Component({
   selector: 'app-cart-item',
   standalone: true,
-  imports: [],
+  imports: [DecimalPipe],
   templateUrl: './cart-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CartItemComponent {
-  @Input() title: string = '';
-  @Input() img: string = '';
-  @Input() price: number = 0;
+  @Input() item: CartItem;
+  @Output() remove = new EventEmitter<number>();
 
-  constructor() {}
-
-  onClick() {}
+  onRemove() {
+    this.remove.emit(this.item.id);
+  }
 }

@@ -1,7 +1,11 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+} from '@angular/core';
 import { CardComponent } from '../../shared/card/card.component';
 import { HomeService } from './home.service';
-import { debounceTime, startWith, Subject, take, takeUntil, zip } from 'rxjs';
+import { debounceTime, startWith, Subject, take, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -15,12 +19,12 @@ import {
   standalone: true,
   imports: [CommonModule, CardComponent, ReactiveFormsModule],
   templateUrl: './home.component.html',
-  providers: [HomeService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
   items$ = this._homeService.$items;
   form: FormGroup;
+  isLoading = true;
 
   private _onSearchDestroy$: Subject<void> = new Subject();
   private _unsubscribeAll$: Subject<void> = new Subject();
@@ -28,6 +32,7 @@ export class HomeComponent {
   constructor(
     private _homeService: HomeService,
     private _fb: FormBuilder,
+    private _cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -41,12 +46,20 @@ export class HomeComponent {
       )
       .subscribe((value) => {
         this._onSearchDestroy$.next();
+        this.isLoading = true;
+        this._cdr.markForCheck();
 
         this._homeService
           .getItems(value)
           .pipe(take(1), takeUntil(this._onSearchDestroy$))
           .subscribe(() => {
-            this._homeService.getFavorites().pipe(take(1)).subscribe();
+            this._homeService
+              .getFavorites()
+              .pipe(take(1))
+              .subscribe(() => {
+                this.isLoading = false;
+                this._cdr.markForCheck();
+              });
           });
       });
   }

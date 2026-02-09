@@ -1,9 +1,13 @@
-<div class="fixed z-10 top-0 h-full w-full bg-black opacity-70"></div>
 <div
-  class="flex flex-col justify-between fixed z-10 top-0 h-full right-0 w-96 bg-white px-10 py-7"
+  class="fixed z-20 top-0 left-0 h-full w-full bg-black opacity-70"
+  (click)="close()"
+></div>
+<div
+  class="flex flex-col justify-between fixed z-30 top-0 h-full right-0 w-96 bg-white px-10 py-7"
 >
   <h2 class="text-2xl font-bold mb-10 flex items-center gap-5">
     <svg
+      (click)="close()"
       class="rotate-180 hover:-translate-x-1 opacity-30 hover:opacity-100 transition cursor-pointer"
       width="16"
       height="14"
@@ -28,37 +32,79 @@
     </svg>
     Cart
   </h2>
-  <div class="flex flex-col flex-1 justify-between">
-    <div class="flex flex-col gap-5">
-      <app-cart-item
-        [title]="'Men sneakers Nike Blazer Mid Suede'"
-        [price]="1000"
-        [img]="'/sneakers/sneakers-1.jpg'"
-      >
-      </app-cart-item>
-    </div>
 
-    <div>
-      <div class="flex flex-col gap-5">
-        <div class="flex items-end gap-2">
-          <span>Total:</span>
-          <div class="flex-1 border-b border-dashed"></div>
-          <span class="font-bold">1000 $.</span>
-        </div>
-
-        <div class="flex items-end gap-2">
-          <span>Fee 5%:</span>
-          <div class="flex-1 border-b border-dashed"></div>
-          <span class="font-bold">50 $.</span>
-        </div>
+  <ng-container *ngIf="cartItems$ | async as items">
+    <div
+      *ngIf="items.length && !isOrderComplete; else emptyState"
+      class="flex flex-col flex-1 justify-between overflow-hidden"
+    >
+      <div class="flex flex-col gap-5 overflow-auto pr-2">
+        <app-cart-item
+          *ngFor="let item of items"
+          [item]="item"
+          (remove)="removeItem($event)"
+        ></app-cart-item>
       </div>
 
-      <button
-        class="flex justify-center items-center gap-3 w-full py-3 mt-10 bg-lime-500 text-white rounded-xl transition active:bg-lime-700 hover:bg-lime-600"
-      >
-        Complete
-        <img src="/arrow-next.svg" alt="Arrow" />
-      </button>
+      <div class="pt-5">
+        <ng-container *ngIf="cartTotal$ | async as total">
+          <div class="flex flex-col gap-4">
+            <div class="flex items-end gap-2">
+              <span>Total:</span>
+              <div class="flex-1 border-b border-dashed"></div>
+              <span class="font-bold">{{ total | number: '1.2-2' }} $</span>
+            </div>
+
+            <div class="flex items-end gap-2">
+              <span>Fee 5%:</span>
+              <div class="flex-1 border-b border-dashed"></div>
+              <span class="font-bold">{{ total * 0.05 | number: '1.2-2' }} $</span>
+            </div>
+          </div>
+        </ng-container>
+
+        <button
+          (click)="onCheckout()"
+          class="flex justify-center items-center gap-3 w-full py-3 mt-7 bg-lime-500 text-white rounded-xl transition active:bg-lime-700 hover:bg-lime-600"
+        >
+          Complete
+          <img src="assets/icons/arrow-next.svg" alt="Arrow" />
+        </button>
+      </div>
     </div>
-  </div>
+
+    <ng-template #emptyState>
+      <div
+        class="flex flex-col items-center justify-center flex-1 text-center"
+      >
+        <img
+          *ngIf="isOrderComplete"
+          src="assets/icons/order-success-icon.png"
+          class="w-20 mb-5"
+        />
+        <img
+          *ngIf="!isOrderComplete"
+          src="assets/icons/package-icon.png"
+          class="w-20 mb-5"
+        />
+        <h3 class="text-xl font-bold mb-2">
+          {{ isOrderComplete ? 'Order placed!' : 'Cart is empty' }}
+        </h3>
+        <p class="text-slate-400 text-sm">
+          {{
+            isOrderComplete
+              ? 'Your order will be delivered soon'
+              : 'Add at least one pair of sneakers to place an order.'
+          }}
+        </p>
+        <button
+          (click)="close()"
+          class="flex justify-center items-center gap-3 w-full py-3 mt-10 bg-lime-500 text-white rounded-xl transition active:bg-lime-700 hover:bg-lime-600"
+        >
+          Back to shopping
+          <img src="assets/icons/arrow-next.svg" alt="Arrow" />
+        </button>
+      </div>
+    </ng-template>
+  </ng-container>
 </div>

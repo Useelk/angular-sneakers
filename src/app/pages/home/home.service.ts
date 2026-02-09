@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/envirionment';
+import { environment } from '../../../environments/environment';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { map, Observable, tap } from 'rxjs';
+import { catchError, map, Observable, of, tap } from 'rxjs';
 import { CartItem } from './home.interface';
 
 @Injectable({
@@ -18,6 +18,16 @@ export class HomeService {
 
   get $favorites(): Observable<CartItem[]> {
     return this._favorites.asObservable();
+  }
+
+  get $favoriteItems(): Observable<CartItem[]> {
+    return this._items
+      .asObservable()
+      .pipe(
+        map((items) =>
+          items ? items.filter((item) => item.isFavorite) : [],
+        ),
+      );
   }
 
   constructor(private _http: HttpClient) {}
@@ -37,11 +47,19 @@ export class HomeService {
       .get<CartItem[]>(`${environment.apiUrl}items`, { params: params })
       .pipe(
         map((data) => {
-          data.map((obj) => ({ ...obj, isFavorite: false, isAdded: false }));
-          return data;
+          return data.map((obj) => ({
+            ...obj,
+            price: obj.price / 100,
+            isFavorite: false,
+            isAdded: false,
+          }));
         }),
         tap((data) => {
           this._items.next(data);
+        }),
+        catchError(() => {
+          this._items.next([]);
+          return of([]);
         }),
       );
   }
@@ -69,6 +87,7 @@ export class HomeService {
 
         this._items.next(modifiedItems);
       }),
+      catchError(() => of([])),
     );
   }
 

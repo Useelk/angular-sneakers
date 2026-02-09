@@ -1,27 +1,20 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeaderComponent } from './shared/header/header.component';
-import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { DrawerComponent } from './shared/drawer/drawer.component';
+import { CartService } from './shared/services/cart.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    FormsModule,
-    HeaderComponent,
-    HttpClientModule,
-    CommonModule,
-    ReactiveFormsModule,
-  ],
+  imports: [RouterOutlet, HeaderComponent, CommonModule, DrawerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnInit {
-  constructor() {}
+export class AppComponent {
+  isCartOpen$ = this._cartService.isOpen$;
 
-  ngOnInit() {}
+  constructor(private _cartService: CartService) {}
 }

@@ -29,7 +29,7 @@ export class UserService {
     }
 
     localStorage.setItem('user', data);
-    this._item.next(this.initialObj);
+    this._item.next(value);
   }
 
   getUserData() {

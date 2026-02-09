@@ -3,32 +3,40 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   Input,
-  Output,
 } from '@angular/core';
 import { HomeService } from '../../pages/home/home.service';
+import { CartService } from '../services/cart.service';
 import { take } from 'rxjs';
-import { FormGroup } from '@angular/forms';
+import { CartItem } from '../../pages/home/home.interface';
 
 @Component({
   selector: 'app-card',
   standalone: true,
   imports: [DecimalPipe],
   templateUrl: './card.component.html',
-  providers: [HomeService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardComponent {
-  @Input() item: any;
+  @Input() item: CartItem;
 
   constructor(
     private _homeService: HomeService,
-    private _chageDetectorRef: ChangeDetectorRef,
+    private _cartService: CartService,
+    private _cdr: ChangeDetectorRef,
   ) {}
 
-  ngOnInit() {
-    this.item.price = this.item.price / 100;
+  get isInCart(): boolean {
+    return this._cartService.isInCart(this.item.id);
+  }
+
+  onAddToCart() {
+    if (this.isInCart) {
+      this._cartService.removeItem(this.item.id);
+    } else {
+      this._cartService.addItem(this.item);
+    }
+    this._cdr.markForCheck();
   }
 
   onFavoriteClick() {
@@ -38,9 +46,8 @@ export class CardComponent {
         .pipe(take(1))
         .subscribe((value: any) => {
           this.item.isFavorite = true;
-          this.item.parentId = value.id;
-
-          this._chageDetectorRef.markForCheck();
+          this.item.favoriteId = value.id;
+          this._cdr.markForCheck();
         });
 
       return;
@@ -51,7 +58,8 @@ export class CardComponent {
       .pipe(take(1))
       .subscribe(() => {
         this.item.isFavorite = false;
-        delete this.item.parentId;
+        delete this.item.favoriteId;
+        this._cdr.markForCheck();
       });
   }
 }

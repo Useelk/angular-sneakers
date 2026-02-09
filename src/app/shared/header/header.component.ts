@@ -1,22 +1,22 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { UserService } from '../services/user.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
-import { User } from './user.interface';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { RouterLink } from '@angular/router';
+import { CartService } from '../services/cart.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, MatSidenavModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderComponent implements OnInit {
-  item$: Observable<User> = this._userService.$item;
+export class HeaderComponent {
+  cartTotal$ = this._cartService.cartTotal$;
 
-  constructor(private _userService: UserService) {}
+  constructor(private _cartService: CartService) {}
 
-  ngOnInit(): void {}
+  openCart() {
+    this._cartService.open();
+  }
 }
